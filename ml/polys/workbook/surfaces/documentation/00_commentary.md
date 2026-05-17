@@ -356,4 +356,4 @@ The math chapters elaborate every claim in this commentary.
 
 The notebooks themselves are the source for every numerical claim. Every figure has an attached `figures/cache/*.npz` containing the underlying arrays so the rendering can be regenerated without re-training (see `python _export_figures.py --no-recompute`). Every trained student is cached under `figures/cache/students_p113/` or `figures/cache/students_p17/` for the same reason.
 
-This expository together with the math chapters is the math-first piece of the surfaces writeup. Subsequent folders cover engineering, infrastructure, and deployment -- separate concerns from what this folder ships.
+This commentary together with the math chapters is the math-first piece of the surfaces writeup. Subsequent folders cover engineering, infrastructure, and deployment -- separate concerns from what this folder ships.

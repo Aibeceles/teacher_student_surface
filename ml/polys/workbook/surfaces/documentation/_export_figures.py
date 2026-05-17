@@ -1,4 +1,4 @@
-"""Regenerate the nine figures embedded in 00_expository.md.
+"""Regenerate the nine figures embedded in 00_commentary.md.
 
 Stages
 ------

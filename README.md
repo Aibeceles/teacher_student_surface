@@ -3,7 +3,7 @@
 A self-contained extract of the math-first piece of the `surfaces/` writeup from
 the parent `Aibeceles` monorepo. The repo carries the minimum codebase needed
 to render and reproduce the figures in
-[`00_expository.md`](ml/polys/workbook/surfaces/documentation/00_expository.md),
+[`00_commentary.md`](ml/polys/workbook/surfaces/documentation/00_commentary.md),
 a third datapoint along the Welch Labs / Nanda / Anthropic mechanistic-
 interpretability axis.
 
@@ -17,7 +17,7 @@ The expository is structured as a probe-by-probe reply to the Welch Labs video
   [`welsh_nanada_transcript.txt`](ml/polys/workbook/surfaces/documentation/welsh_nanada_transcript.txt)
   (auto-generated YouTube captions, lightly cleaned)
 
-The seven probes in `00_expository.md` follow the video's walkthrough one-for-
+The seven probes in `00_commentary.md` follow the video's walkthrough one-for-
 one; the transcript is included so readers can match a passage in the video
 against a section in the expository without leaving the repo.
 
@@ -32,7 +32,7 @@ ml/polys/
 ├── sobolev_distill_character/      # (Re, Im) character variant (the package the doc uses)
 └── workbook/surfaces/
     ├── documentation/              # the six math chapters + figures + regen script
-    │   ├── 00_expository.md        # narrative companion to chapters 01-05
+    │   ├── 00_commentary.md        # narrative companion to chapters 01-05
     │   ├── 01_torus_and_character.md
     │   ├── 02_interpolation_cardinals_rkhs.md
     │   ├── 03_sobolev_distillation.md
@@ -55,7 +55,7 @@ ml/polys/
 ## Reading the documentation
 
 Open
-[`ml/polys/workbook/surfaces/documentation/00_expository.md`](ml/polys/workbook/surfaces/documentation/00_expository.md)
+[`ml/polys/workbook/surfaces/documentation/00_commentary.md`](ml/polys/workbook/surfaces/documentation/00_commentary.md)
 in any markdown viewer (GitHub renders it natively). All in-doc cross-links
 (figures, chapters, source modules, notebooks) resolve inside this repo.
 

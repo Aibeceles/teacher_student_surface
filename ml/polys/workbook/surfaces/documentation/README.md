@@ -8,7 +8,7 @@ This folder is the *reference* layer of the documentation. Experiments live in t
 
 ```
 README.md                                  -- this file
-00_expository.md                           -- the narrative companion (story layer)
+00_commentary.md                           -- the narrative companion (story layer)
 01_torus_and_character.md                  -- the geometric setup
 02_interpolation_cardinals_rkhs.md         -- approximation theory on T^1 and T^2
 03_sobolev_distillation.md                 -- functional analysis of the loss
@@ -22,12 +22,12 @@ The five chapters 01-05 are sequential: each presupposes the definitions of thos
 
 ## Companion: narrative expository
 
-The math chapters above are the *reference* layer. The companion *narrative* layer is in [00_expository.md](00_expository.md) (with figures in [figures/](figures/) regenerated from [_export_figures.py](_export_figures.py)). Readers who want the story can read 00 alone; readers who want the proofs follow the back-references into chapters 01-05. The expository is structured around the seven-probe checklist of the Welch Labs / Nanda video, with each probe's figure at the modulus that best demonstrates the claim (p = 113 for the Tier-1 reproductions, p = 17 for the bottleneck and gradient-field figures, p = 8 for the variants comparison).
+The math chapters above are the *reference* layer. The companion *narrative* layer is in [00_commentary.md](00_commentary.md) (with figures in [figures/](figures/) regenerated from [_export_figures.py](_export_figures.py)). Readers who want the story can read 00 alone; readers who want the proofs follow the back-references into chapters 01-05. The commentary is structured around the seven-probe checklist of the Welch Labs / Nanda video, with each probe's figure at the modulus that best demonstrates the claim (p = 113 for the Tier-1 reproductions, p = 17 for the bottleneck and gradient-field figures, p = 8 for the variants comparison).
 
 ## Mapping `surfaces/` subfolders to chapters
 
 > **Note (this extract).** This repo is the minimum carve-out needed to render
-> `00_expository.md` and regenerate its figures. The folders marked *(not
+> `00_commentary.md` and regenerate its figures. The folders marked *(not
 > shipped)* below live in the parent `Aibeceles` monorepo only; their links
 > here will 404. The `sobolev/` rows are the ones that *are* shipped (only the
 > seven notebooks the expository references).
@@ -40,7 +40,7 @@ The math chapters above are the *reference* layer. The companion *narrative* lay
 | `quadratics/` *(not shipped)* | 02 | -- | same Hermite-Birkhoff walkthrough |
 | [`sobolev/`](../sobolev/) | 03 | 01, 02 | -- |
 | [`sobolev/grokking/`](../sobolev/grokking/) | 04, 05 | 01, 03 | -- |
-| this folder, narrative layer | [00_expository.md](00_expository.md) | all of 01-05 | -- |
+| this folder, narrative layer | [00_commentary.md](00_commentary.md) | all of 01-05 | -- |
 
 The polynomial Hermite-Birkhoff teacher derivation (referenced as
 `bivariate_hermite_birkhoff_math_walkthrough.md`) is not shipped with this
