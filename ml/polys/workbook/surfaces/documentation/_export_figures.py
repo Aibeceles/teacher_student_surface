@@ -915,17 +915,18 @@ def render_f10(plt, data: dict) -> Path:
     gFx = data["grad_Ref_x"][::step, ::step]
     gFy = data["grad_Ref_y"][::step, ::step]
 
-    fig, ax = plt.subplots(figsize=(7.0, 6.5))
+    fig, ax = plt.subplots(figsize=(3.5, 3.25))
     ax.quiver(Xc, Yc, gTx, gTy, color=PALETTE["primary"], alpha=0.75,
               label=r"teacher $\nabla \mathrm{Re}\,T$",
-              scale_units="xy", scale=1.0, width=0.005)
+              scale_units="xy", scale=0.35, width=0.007)
     ax.quiver(Xc, Yc, gFx, gFy, color=PALETTE["quaternary"], alpha=0.75,
               label=r"student $\nabla \mathrm{Re}\,f_\theta$",
-              scale_units="xy", scale=1.0, width=0.005)
-    ax.set_xlabel("x"); ax.set_ylabel("y")
+              scale_units="xy", scale=0.35, width=0.007)
+    ax.set_xlabel("x", fontsize=8); ax.set_ylabel("y", fontsize=8)
+    ax.tick_params(axis="both", labelsize=7)
     ax.set_aspect("equal", adjustable="box")
-    ax.set_title(f"F10: gradient direction overlay, Re channel (p = {p}, canonical 32x64)")
-    ax.legend(loc="upper right", framealpha=0.92)
+    ax.set_title(f"F10: gradient direction (Re, p = {p})", fontsize=9)
+    ax.legend(loc="upper right", framealpha=0.92, fontsize=6.5)
     fig.tight_layout()
     out = FIGURES_DIR / "f10_grad_quiver_p17.png"
     fig.savefig(out)
