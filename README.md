@@ -7,6 +7,20 @@ to render and reproduce the figures in
 a third datapoint along the Welch Labs / Nanda / Anthropic mechanistic-
 interpretability axis.
 
+## Source video
+
+The expository is structured as a probe-by-probe reply to the Welch Labs video
+*The most complex AI model that we fully understand*:
+
+- YouTube: https://www.youtube.com/watch?v=D8GOeCFFby4
+- Local transcript:
+  [`welsh_nanada_transcript.txt`](ml/polys/workbook/surfaces/documentation/welsh_nanada_transcript.txt)
+  (auto-generated YouTube captions, lightly cleaned)
+
+The seven probes in `00_expository.md` follow the video's walkthrough one-for-
+one; the transcript is included so readers can match a passage in the video
+against a section in the expository without leaving the repo.
+
 ## Layout
 
 ```
@@ -24,6 +38,7 @@ ml/polys/
     │   ├── 03_sobolev_distillation.md
     │   ├── 04_dft_pontryagin_trig_identity.md
     │   ├── 05_probes_helix_ablation.md
+    │   ├── welsh_nanada_transcript.txt   # Welch Labs / Nanda video transcript
     │   ├── _export_figures.py      # regenerates figures from cache or from scratch
     │   └── figures/                # 9 PNGs + .npz / .eqx caches
     └── sobolev/                    # the 7 notebooks referenced from 00
