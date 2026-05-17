@@ -832,14 +832,18 @@ def render_f09(plt, data: dict) -> Path:
     fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.2))
     titles = [r"$|\nabla T|$ (analytic teacher)",
               r"$|\nabla f_\theta|$ (student)",
-              r"$|\nabla T - \nabla f_\theta|$ (mismatch)"]
+              r"$|\nabla T - \nabla f_\theta|$ (mismatch, same scale)"]
     fields = [gT, gF, gD]
-    cmaps = ["viridis", "viridis", "magma"]
-    vmaxes = [vmax, vmax, float(gD.max())]
-    for ax, title, field, cmap, vm in zip(axes, titles, fields, cmaps, vmaxes):
-        im = ax.imshow(field.T, origin="lower", extent=extent, aspect="auto", cmap=cmap, vmin=0, vmax=vm)
+    for ax, title, field in zip(axes, titles, fields):
+        im = ax.imshow(field.T, origin="lower", extent=extent, aspect="auto",
+                       cmap="viridis", vmin=0, vmax=vmax)
         ax.set_xlabel("x"); ax.set_ylabel("y")
         ax.set_title(title)
+        ax.text(0.03, 0.97,
+                f"max = {float(field.max()):.3f}\nmean = {float(field.mean()):.3f}",
+                transform=ax.transAxes, va="top", ha="left", fontsize=8,
+                color="white",
+                bbox=dict(boxstyle="round,pad=0.25", fc="black", ec="none", alpha=0.55))
         fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
     fig.suptitle(f"F9: gradient-field comparison at p = {p} (canonical 32x64 baseline_siren)")
     fig.tight_layout()

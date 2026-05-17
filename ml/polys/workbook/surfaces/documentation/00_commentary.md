@@ -57,11 +57,11 @@ The student is a SIREN-trunk MLP `f_theta : T^2 -> R^2` with an arithmetic head 
 
 *F8 (extracted from [sobolev_student_character_periodic.ipynb](../sobolev/sobolev_student_character_periodic.ipynb) cell `modular`, p = 17 with the `polynomial` and `periodic` teachers side by side): the polynomial teacher misses some cells; the periodic teacher reproduces every cell of the modular addition table exactly.*
 
-The visual cleanest demonstration of what `H^2` distillation actually matches is figure F9: at the canonical p = 17 student, the gradient field `nabla f_theta` matches the analytic teacher gradient `nabla T` to within numerical noise across the entire 64x64 mesh.
+The visual demonstration of what `H^2` distillation actually matches is figure F9: at the canonical p = 17 student, the gradient field `nabla f_theta` matches the analytic teacher gradient `nabla T` to within `3.7%` on average across the 64x64 mesh, with worst-case residual reaching about `60%` of `|nabla T|` at scattered points where the SIREN trunk is still settling.
 
 ![F9: gradient-field comparison at p = 17](figures/f09_grad_field_comparison.png)
 
-The middle and left panels are visually indistinguishable; the rightmost panel (the mismatch) is two orders of magnitude smaller. This is what `H^2` distillation buys: the student matches not only the teacher's values but also its differential geometry.
+The middle and left panels are visually near-identical: a flat field at the analytic value `(2 pi / p) * sqrt 2 ~ 0.523`. The rightmost panel (the mismatch, rendered on the same color scale as the teacher and student so the comparison is honest) is mostly dark with a few brighter spots; the mean mismatch (`0.019`) is roughly an order of magnitude smaller than the teacher's gradient magnitude, while the worst pixel reaches `0.313` (about `60%` of teacher). This is what `H^2` distillation buys: the student matches the teacher's differential geometry almost everywhere, with isolated residuals rather than a uniformly small error.
 
 **Training dynamics.** The Sobolev distillation has parallel supervision both at lattice nodes and at off-lattice mesh points. The OpenAI / Nanda grokking arc -- where train accuracy climbs to 1 quickly and test accuracy lags by thousands of steps before suddenly jumping -- is structurally absent in our setup, because the off-lattice mesh closes the train / test gap immediately. (We measured this: across the 28 + 9 + 3 + 9 cells of the four grokking notebooks, `gap = train_acc - hold_acc = 0.000` literally everywhere.) What survives is the *internal* arc -- the trunk slowly committing to Fourier features over training, visible in figure F5 (the excluded-loss curve at p = 8):
 
