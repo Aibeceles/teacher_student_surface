@@ -71,6 +71,8 @@ F9 shows that the student's gradient *magnitude* tracks the teacher's; F10 shows
 
 **Training dynamics.** The Sobolev distillation has parallel supervision both at lattice nodes and at off-lattice mesh points. The OpenAI / Nanda grokking arc -- where train accuracy climbs to 1 quickly and test accuracy lags by thousands of steps before suddenly jumping -- is structurally absent in our setup, because the off-lattice mesh closes the train / test gap immediately. (We measured this: across the 28 + 9 + 3 + 9 cells of the four grokking notebooks, `gap = train_acc - hold_acc = 0.000` literally everywhere.) What survives is the *internal* arc -- the trunk slowly committing to Fourier features over training, visible in figure F5 (the excluded-loss curve at p = 8):
 
+*Welch Labs walkthrough of the OpenAI grokking arc: transcript [L173-L200](welsh_nanada_transcript.txt#L173-L200).*
+
 ![F5: excluded-loss arc at p = 8 across training](figures/f05_excluded_loss_curve.png)
 
 The gap between baseline and ablated value MSE rises monotonically from `+0.014` at the start of training to `+1.006` at the end. The model commits to the named Fourier modes; ablating them sends the loss up; the rise is the temporal mechanistic signature.
