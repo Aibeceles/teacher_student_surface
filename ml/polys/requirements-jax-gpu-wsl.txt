@@ -1,0 +1,14 @@
+# Pin JAX CUDA + surfaces notebook stack for WSL2 Ubuntu (Linux wheels).
+# Create venv from ml/polys, then: pip install -r requirements-jax-gpu-wsl.txt
+# Exact CUDA extras follow https://jax.readthedocs.io/en/latest/installation.html
+
+jax[cuda12]>=0.10.0
+equinox>=0.11.0
+optax>=0.2.0
+numpy>=1.26.0
+scipy>=1.11.0
+matplotlib>=3.8.0
+jupyter>=1.0.0
+ipykernel>=6.0.0
+pytest>=7.0.0
+pandas>=2.0.0
