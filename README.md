@@ -42,8 +42,10 @@ ml/polys/
     │   ├── _export_figures.py      # regenerates figures from cache or from scratch
     │   └── figures/                # 9 PNGs + .npz / .eqx caches
     └── sobolev/                    # the 7 notebooks referenced from 00
+        ├── README.md               # how to run + set MODULUS (p)
         ├── sobolev_student_character_periodic.ipynb
         └── grokking/
+            ├── README.md           # per-notebook p, modulus_sweep workflow
             ├── modulus_sweep.ipynb
             ├── dynamics_excluded_loss.ipynb
             ├── manifold_and_ablation.ipynb
@@ -51,6 +53,26 @@ ml/polys/
             ├── grokking_baseline_with_decay.ipynb
             └── grokking_capacity_sweep.ipynb
 ```
+
+## JAX and notebook setup
+
+```bash
+python -m venv .venv
+. .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -U pip wheel
+pip install -r ml/polys/requirements-jax-gpu-wsl.txt
+pip install jupyter ipykernel   # for interactive notebooks
+```
+
+On WSL2 with an NVIDIA GPU, use the Linux JAX CUDA wheels from
+[requirements-jax-gpu-wsl.txt](ml/polys/requirements-jax-gpu-wsl.txt).
+Open notebooks under `ml/polys/workbook/surfaces/sobolev/` with that folder as
+the Jupyter working directory.
+
+**Running the sobolev / grokking notebooks** (setting modulus `p`, experiment
+order, pitfalls): see
+[`ml/polys/workbook/surfaces/sobolev/README.md`](ml/polys/workbook/surfaces/sobolev/README.md)
+and [`grokking/README.md`](ml/polys/workbook/surfaces/sobolev/grokking/README.md).
 
 ## Reading the documentation
 
