@@ -2,7 +2,7 @@
 
 Math-first piece of the `surfaces/` writeup. Five chapters covering the geometric, analytic, and algebraic background of the character / Sobolev / Fourier work, plus this index.
 
-This folder is the *reference* layer of the documentation. Experiments live in the notebooks themselves; engineering details (JAX, Equinox, optax, SIREN architecture) live elsewhere. The chapters here state definitions, theorems, and proof sketches at a level appropriate for a graduate-entrance review.
+This folder is the *reference* layer of the documentation. Experiments live in the notebooks themselves; engineering details (JAX, Equinox, optax, SIREN architecture) live elsewhere.
 
 ## Reading order
 
