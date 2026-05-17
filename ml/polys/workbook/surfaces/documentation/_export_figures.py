@@ -853,6 +853,86 @@ def render_f09(plt, data: dict) -> Path:
     return out
 
 
+def compute_f10(no_recompute: bool) -> dict:
+    """F10 -- Re-channel gradient direction quiver at p=17.
+
+    Companion to F9: F9 shows magnitude (heatmap), F10 shows direction
+    (quiver overlay). Reuses the cached canonical_32x64 student.
+    """
+    cache_path = CACHE_DIR / "f10_grad_quiver_p17.npz"
+    cached = _load_npz(cache_path)
+    if cached:
+        return cached
+    if no_recompute:
+        raise SystemExit("--no-recompute set but f10 cache missing")
+
+    import jax
+    import jax.numpy as jnp
+    from sobolev_distill_character.model import f_arith_character
+
+    student, ds, teacher, sig = _train_or_load_p17_canonical(no_recompute=no_recompute)
+    p = int(sig["p"])
+
+    nx = ny = 64
+    xs = np.linspace(0, p, nx, endpoint=False, dtype=np.float64)
+    ys = np.linspace(0, p, ny, endpoint=False, dtype=np.float64)
+    XX, YY = np.meshgrid(xs, ys, indexing="ij")
+    raw = np.stack([XX.ravel(), YY.ravel()], axis=-1)
+    norm = ds.norm
+    cx = np.array([norm.x_center, norm.y_center], dtype=np.float64)
+    sc = np.array([norm.x_scale, norm.y_scale], dtype=np.float64)
+    xy_norm = ((raw - cx) / sc).astype(np.float32)
+
+    omega = 2.0 * math.pi / p
+    s = np.sin(omega * (XX + YY))
+    grad_ReT_x = -omega * s
+    grad_ReT_y = -omega * s
+
+    def _re_norm(stu, xy):
+        return f_arith_character(stu, xy)[0]
+    g_re = jax.vmap(jax.grad(lambda xy: _re_norm(student, xy)))(jnp.asarray(xy_norm))
+    g_re = np.asarray(g_re).reshape(nx, ny, 2) / sc[None, None, :] * float(norm.v_re_std)
+    grad_Ref_x = g_re[..., 0]
+    grad_Ref_y = g_re[..., 1]
+
+    data = {
+        "xs": xs, "ys": ys,
+        "grad_ReT_x": grad_ReT_x, "grad_ReT_y": grad_ReT_y,
+        "grad_Ref_x": grad_Ref_x, "grad_Ref_y": grad_Ref_y,
+        "p": np.array([p]),
+    }
+    _save_npz(cache_path, **data)
+    return data
+
+
+def render_f10(plt, data: dict) -> Path:
+    xs, ys = data["xs"], data["ys"]
+    p = int(data["p"][0])
+    step = 8
+    Xc, Yc = np.meshgrid(xs[::step], ys[::step], indexing="ij")
+    gTx = data["grad_ReT_x"][::step, ::step]
+    gTy = data["grad_ReT_y"][::step, ::step]
+    gFx = data["grad_Ref_x"][::step, ::step]
+    gFy = data["grad_Ref_y"][::step, ::step]
+
+    fig, ax = plt.subplots(figsize=(7.0, 6.5))
+    ax.quiver(Xc, Yc, gTx, gTy, color=PALETTE["primary"], alpha=0.75,
+              label=r"teacher $\nabla \mathrm{Re}\,T$",
+              scale_units="xy", scale=1.0, width=0.005)
+    ax.quiver(Xc, Yc, gFx, gFy, color=PALETTE["quaternary"], alpha=0.75,
+              label=r"student $\nabla \mathrm{Re}\,f_\theta$",
+              scale_units="xy", scale=1.0, width=0.005)
+    ax.set_xlabel("x"); ax.set_ylabel("y")
+    ax.set_aspect("equal", adjustable="box")
+    ax.set_title(f"F10: gradient direction overlay, Re channel (p = {p}, canonical 32x64)")
+    ax.legend(loc="upper right", framealpha=0.92)
+    fig.tight_layout()
+    out = FIGURES_DIR / "f10_grad_quiver_p17.png"
+    fig.savefig(out)
+    plt.close(fig)
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Driver
 # ---------------------------------------------------------------------------
@@ -864,6 +944,7 @@ COMPUTE_RENDER = {
     "f04": (compute_f04, render_f04),
     "f06": (compute_f06, render_f06),
     "f09": (compute_f09, render_f09),
+    "f10": (compute_f10, render_f10),
 }
 
 EXTRACTED_NO_RENDER = {"f02", "f05", "f07", "f08"}
