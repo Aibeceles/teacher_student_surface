@@ -30,6 +30,8 @@ The Welch Labs video, *The most complex AI model that we fully understand*, walk
 - **Act II (Nanda 2023).** The mechanism is identified: the trunk learns sparse Fourier features `{cos 2 pi k_i / 113, sin 2 pi k_i / 113}` per axis early in training; the MLP block then computes `cos(2 pi (i + j) / 113) = cos i cos j - sin i sin j` per neuron via the trig identity; the readout linearly combines these into the correct lattice index. Six diagnostics (linear probes, DFT, channel decomposition, sum-of-angles per neuron, excluded loss, causal ablation) make the mechanism visible end-to-end.
 - **Act III (Anthropic 2024).** The same probing framework is applied to Claude 3.5 Haiku to find a 6-dimensional helix manifold encoding character count for newline-token prediction. The toy modular-arithmetic mechanism *generalises in form* to a real LLM mechanism, even if the model class is utterly different.
 
+The video's full transcript is included in this repo at [welsh_nanada_transcript.txt](welsh_nanada_transcript.txt); the three acts above correspond to roughly [L71-L217](welsh_nanada_transcript.txt#L71-L217) (Act I, OpenAI setup and the grocking paper), [L218-L730](welsh_nanada_transcript.txt#L218-L730) (Act II, the Nanda analysis), and [L731-L802](welsh_nanada_transcript.txt#L731-L802) (Act III, the Anthropic helix). Per-probe transcript line ranges are cited inline in section 4 below.
+
 What the video explicitly does and does not claim:
 
 - **Does claim**: probes generalise across model classes; geometric primitives (the helix, the Fourier features) recur in different settings.
@@ -79,6 +81,8 @@ Each subsection has the same structure. The probe is named, its implementation p
 
 **Implementation.** [linear_probes_character](../../../sobolev_distill_character/probes.py) runs ridge regression with `lambda = 1e-3` and a 80 / 20 train / test split per target. It returns `R^2` on the test set for each target.
 
+*Welch Labs walkthrough of this probe: transcript [L378-L422](welsh_nanada_transcript.txt#L378-L422).*
+
 **What we found.** At p = 113, the probes return near-perfect `R^2` for every Fourier-feature target:
 
 - `R^2(Re T) = +0.996`, `R^2(Im T) = +1.000` -- the lattice-target table is essentially read-out-able from the trunk.
@@ -102,6 +106,8 @@ The probe values come from a baseline_siren student trained at p = 113 on the pe
 
 **Implementation.** [dft_trunk_along_axis](../../../sobolev_distill_character/mechinterp.py) returns the per-neuron magnitude spectrum and the histogram of dominant frequencies.
 
+*Welch Labs walkthrough of this probe: transcript [L348-L377](welsh_nanada_transcript.txt#L348-L377).*
+
 **What we found.** At p = 113 (from [modulus_sweep.ipynb](../sobolev/grokking/modulus_sweep.ipynb)'s p = 113 row), the top-5 non-DC modes across the 32 trunk neurons are `[1, 2, 3, 4, 5]`, and the dominant-frequency histogram is `[30, 2, 0, 0, 0]`: 30 of 32 neurons have $k = 1$ as their dominant axis-0 mode and the remaining 2 use $k = 2$. Modes 3, 4, 5 are empty. At smaller moduli (p = 17, p = 23) the histograms are similarly concentrated.
 
 This is the headline visualisation in the Welch Labs video: "a few clean spikes among 56 candidate frequencies" at p = 113. Our spike-spectrum reproduces this picture directly.
@@ -119,6 +125,8 @@ This is the headline visualisation in the Welch Labs video: "a few clean spikes 
 **Probe.** Per-neuron 2-D FFT of the trunk's $p \times p$ lattice surface, decomposed into the four real product channels via parity: $\mathrm{cos x cos y}$, $\mathrm{sin x sin y}$, $\mathrm{cos x sin y}$, $\mathrm{sin x cos y}$. Aggregated channel energies say which kinds of product structure the trunk is computing across the population.
 
 **Implementation.** [fft2_neuron_surface](../../../sobolev_distill_character/mechinterp.py) returns the four channel-energy arrays plus a per-neuron sum-of-angles score (used in 4.4).
+
+*Welch Labs walkthrough of this probe: transcript [L491-L531](welsh_nanada_transcript.txt#L491-L531).*
 
 **What we found.** At p = 113 with the axis-loss-off baseline, the channel-energy fractions are:
 
@@ -145,6 +153,8 @@ At smaller p with axis_probe = True (the modulus_sweep configuration), `cc` rise
 
 **Implementation.** [fft2_neuron_surface](../../../sobolev_distill_character/mechinterp.py) returns the per-neuron `sum_of_angles_score`. The histogram and median are computed inline.
 
+*Welch Labs walkthrough of this probe: transcript [L577-L622](welsh_nanada_transcript.txt#L577-L622).*
+
 **What we found.** This is the probe that made the loudest negative noise in the prior batch of notebooks: at p = 8 with the axis-loss-on configuration, the score's median was `0.000` and only 3.1% of neurons crossed 0.5 ([fourier_decomp.ipynb](../sobolev/grokking/fourier_decomp.ipynb) section 5). At p = 17 with axis-loss-off ([grokking_baseline_with_decay.ipynb](../sobolev/grokking/grokking_baseline_with_decay.ipynb)), the median rose to 0.91; and at the bottlenecked baseline `(embed_dim = 8, trunk_hidden = 16)` at p = 17 ([grokking_capacity_sweep.ipynb](../sobolev/grokking/grokking_capacity_sweep.ipynb)), the median was 0.94 with 7 of 8 neurons crossing 0.5 -- a 50x lift over the original baseline.
 
 The figure here is from the bottleneck cell. The score per neuron is `[1.000, 0.969, 0.000, 0.976, 0.996, 0.998, 1.000, 0.990]`: seven of the eight neurons are essentially perfect trig-identity neurons; one is a pure axis neuron with score 0. Median 0.993. Mean 0.866.
@@ -163,6 +173,8 @@ The figure here is from the bottleneck cell. The score per neuron is `[1.000, 0.
 
 **Implementation.** [excluded_loss_at_freqs](../../../sobolev_distill_character/mechinterp.py) projects the named modes out of trunk activations and re-evaluates the downstream loss. [dynamics_excluded_loss.ipynb](../sobolev/grokking/dynamics_excluded_loss.ipynb) checkpoints the student every 100 epochs over 2000 epochs and replays the diagnostic at each checkpoint.
 
+*Welch Labs walkthrough of this probe: transcript [L678-L715](welsh_nanada_transcript.txt#L678-L715).*
+
 **What we found.** At p = 8 in dynamics_excluded_loss, the gap rises monotonically from `+0.014` at the start of training to `+1.006` at the end. The model goes from "the named Fourier modes carry a small fraction of predictive content" to "the named Fourier modes carry essentially all predictive content" over the course of training.
 
 This is a gentler temporal arc than Nanda's transformer grokking visual (where train accuracy is at 1 the whole time and test accuracy jumps suddenly), because the Sobolev pipeline has no test-accuracy gap to begin with. What our diagnostic captures is the *internal* arc: the trunk slowly committing to the right frequency-domain representation. The math chapter (chapter 04 section 8) frames this as a Pontryagin-dual mode projection.
@@ -180,6 +192,8 @@ This is a gentler temporal arc than Nanda's transformer grokking visual (where t
 **Probe.** Project the trunk's lattice activations orthogonal to a candidate subspace `V`; re-evaluate modular accuracy through the rest of the network. The drop in modular accuracy is the *causal* dependence of the readout on the subspace. The probe runs three contrasts at each variant: the readout cos / sin axes, a random matched-norm subspace, and the top-2 PC of the helix.
 
 **Implementation.** [ablate_subspace_and_score](../../../sobolev_distill_character/mechinterp.py) does the projection and re-evaluates `head_a` against the analytic teacher. The four variants come from the same configurations as [manifold_and_ablation.ipynb](../sobolev/grokking/manifold_and_ablation.ipynb): `baseline_siren` (no axis loss), `A_axis_loss` (axis_probe = True), `B_fourier` (Fourier-feature trunk), `C_factored` (two-axis factored trunk).
+
+*Welch Labs walkthrough of this probe: transcript [L687-L707](welsh_nanada_transcript.txt#L687-L707) (the video discusses subspace ablation as the projection variant of excluded loss).*
 
 **What we found.** At p = 113, the four-by-four ablation table is:
 
@@ -207,6 +221,8 @@ The `pc12` column (helix's first two PCs) collapses everything to ~0 across all 
 **Probe.** Average the trunk's lattice activations along one axis (say $j$); take PC1 and PC2; fit `(cos 2 pi k i / p, sin 2 pi k i / p)` into the PC1-PC2 plane for each candidate $k$; report the dominant frequency $k^*$, joint $R^2$ at that frequency, and the wrap angle $w / 2 \pi$ (winding number). A clean helix has $R^2 \ge 0.85$, wrap = $\pm 1$, and a single dominant $k$.
 
 **Implementation.** [helix_pca](../../../sobolev_distill_character/mechinterp.py) returns the report; the 4-panel comparison comes from [manifold_and_ablation.ipynb](../sobolev/grokking/manifold_and_ablation.ipynb).
+
+*Welch Labs walkthrough of this probe: transcript [L749-L795](welsh_nanada_transcript.txt#L749-L795) (Anthropic Haiku's 6-D character-count manifold and the QK twist).*
 
 **What we found.** At p = 8 in manifold_and_ablation, the four variants give:
 
